@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>VIP-гардероб после шторма — Островной квест</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1f4f3b 0%, #0e2c20 100%);
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, 'Inter', sans-serif;
+            min-height: 100vh;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Карточка-сундук с приключением */
+        .quest-card {
+            max-width: 680px;
+            width: 100%;
+            background: rgba(255, 248, 225, 0.96);
+            backdrop-filter: blur(2px);
+            border-radius: 3rem 2rem 3rem 2rem;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,200,0.8);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        /* Штормовая линия */
+        .storm-header {
+            background: #2c4f3f;
+            padding: 1.2rem 1.8rem;
+            border-bottom: 6px solid #e9b56e;
+            background-image: repeating-linear-gradient(45deg, #3e6b55 0px, #3e6b55 2px, #2c4f3f 2px, #2c4f3f 10px);
+        }
+
+        .storm-header h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            color: #ffefcf;
+            text-shadow: 3px 3px 0 #1c3829;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .storm-header h1 span {
+            font-size: 2.2rem;
+        }
+
+        .legend-box {
+            background: #fff2df;
+            margin: 1.2rem 1.5rem;
+            padding: 1.2rem 1.5rem;
+            border-radius: 2rem;
+            border-left: 12px solid #c9863c;
+            box-shadow: 0 6px 0 #b97f47 inset, 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .legend-box p {
+            font-size: 1rem;
+            line-height: 1.4;
+            color: #2b2b1f;
+            font-weight: 500;
+        }
+
+        .legend-box strong {
+            color: #b45f2b;
+            font-weight: 800;
+        }
+
+        .task-badge {
+            background: #ecba7a;
+            margin: 0 1.5rem 1rem 1.5rem;
+            padding: 0.6rem 1rem;
+            border-radius: 60px;
+            font-weight: bold;
+            display: inline-block;
+            color: #2a2418;
+            font-size: 0.85rem;
+            box-shadow: inset 0 -1px 0 rgba(0,0,0,0.1);
+        }
+
+        /* Поле творчества */
+        .creation-zone {
+            background: #fbf5e8;
+            margin: 0 1.5rem 1.2rem 1.5rem;
+            padding: 1rem;
+            border-radius: 1.8rem;
+            border: 2px dashed #cfaa7a;
+            text-align: center;
+        }
+
+        .creation-zone h3 {
+            font-size: 1.2rem;
+            color: #4a3722;
+            margin-bottom: 8px;
+        }
+
+        .creation-zone p.small {
+            font-size: 0.8rem;
+            color: #7e5c38;
+            margin-bottom: 0.8rem;
+        }
+
+        .item-showcase {
+            background: #e9ddc7;
+            border-radius: 2rem;
+            padding: 1rem;
+            margin: 12px 0;
+            border: 1px solid #d6b575;
+            transition: all 0.2s;
+        }
+
+        .example-items {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        .example-items .example {
+            background: #fff0db;
+            border-radius: 3rem;
+            padding: 0.3rem 0.9rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #7b4a22;
+            box-shadow: inset 0 0 0 1px #fbe7c4, 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* счётчик лайков (подписей) */
+        .likes-counter {
+            background: #2d3e2c;
+            margin: 1rem 1.5rem;
+            border-radius: 50px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: 0 5px 0 #1c2b1b;
+        }
+
+        .likes-info {
+            background: #fffaef;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-weight: bold;
+        }
+
+        .likes-number {
+            background: #1f2f1a;
+            color: #f7d98c;
+            font-size: 2.2rem;
+            font-weight: 800;
+            padding: 0.2rem 1rem;
+            border-radius: 60px;
+            min-width: 85px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .like-btn {
+            background: #fea82f;
+            border: none;
+            font-size: 1.3rem;
+            font-weight: bold;
+            padding: 0.7rem 1.5rem;
+            border-radius: 40px;
+            color: #2c1d09;
+            cursor: pointer;
+            transition: 0.1s linear;
+            box-shadow: 0 4px 0 #9b5e1f;
+            font-family: inherit;
+        }
+
+        .like-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #9b5e1f;
+        }
+
+        .like-btn:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .reset-like {
+            background: #705c3e;
+            box-shadow: 0 4px 0 #3f2e19;
+            color: #fff1da;
+        }
+
+        /* панель показа */
+        .fashion-show {
+            margin: 1rem 1.5rem 1.8rem 1.5rem;
+            background: #dccfaf;
+            border-radius: 2rem;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .curator-btn {
+            background: #7c3f1b;
+            border: none;
+            color: #ffefcf;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 0.9rem 1.8rem;
+            border-radius: 40px;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.1s;
+            box-shadow: 0 5px 0 #4a2a12;
+            font-family: inherit;
+        }
+
+        .curator-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #4a2a12;
+        }
+
+        .curator-btn:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: default;
+        }
+
+        .result-fragment {
+            background: #fff5e6;
+            margin: 1rem 1.5rem 2rem 1.5rem;
+            padding: 1.2rem;
+            border-radius: 1.8rem;
+            border-top: 5px solid gold;
+            font-weight: 500;
+            display: none;
+            animation: fadeGlow 0.5s ease;
+        }
+
+        @keyframes fadeGlow {
+            from { opacity: 0; transform: scale(0.95);}
+            to { opacity: 1; transform: scale(1);}
+        }
+
+        .fragment-text {
+            font-size: 1.1rem;
+            color: #3a2b1a;
+            background: #eeddbb;
+            padding: 1rem;
+            border-radius: 1.2rem;
+        }
+
+        .signature-list {
+            font-size: 0.75rem;
+            margin-top: 12px;
+            color: #135c3a;
+            font-weight: 500;
+        }
+
+        footer {
+            padding: 0.8rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #957b58;
+            background: #efebdd;
+        }
+
+        button {
+            user-select: none;
+        }
+
+        @media (max-width: 550px) {
+            body { padding: 0.8rem; }
+            .storm-header h1 { font-size: 1.4rem; }
+            .likes-counter { flex-direction: column; align-items: stretch; text-align: center; }
+            .like-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div class="quest-card">
+    <div class="storm-header">
+        <h1>
+            <span>🌊👔</span> VIP-гардероб после шторма
+        </h1>
+    </div>
+
+    <div class="legend-box">
+        <p><strong>⚡ Легенда острова:</strong> У Макса промок и порвался последний брендовый пиджак. Ему нужно срочно создать «новую коллекцию» из того, что выбросило на берег. Твоя задача — <strong>своими руками</strong> сделать один элемент «высокой островной моды» и собрать <strong>5 живых «лайков» (подписей)</strong> от других участников прямо на твоём творении!</p>
+    </div>
+
+    <div class="task-badge">
+        ✨ ЗАДАНИЕ: Из подручных материалов (туалетная бумага, ветки, скрепки, ткань, ракушки) создай уникальный аксессуар. Затем подойди к другим игрокам, покажи креатив и попроси подписать / поставить символ лайка на предмете (или на отдельном листке).
+    </div>
+
+    <!-- секция, где участник может описать своё творение (доп. вовлечение) -->
+    <div class="creation-zone">
+        <h3>🏝️ Моё творение высокой моды</h3>
+        <p class="small">Напиши, что ты создал(а): (галстук из бумаги, корону из веток, браслет из скрепок...)</p>
+        <input type="text" id="fashionItemInput" placeholder="например: «Корона из кокосовых листьев и скрепок»" style="width: 100%; padding: 10px; border-radius: 60px; border: 1px solid #cfaa7a; background: #fff6e8; margin-bottom: 10px;">
+        <div class="item-showcase" id="itemPreview">
+            🎭 Твой модный объект: <span id="itemDisplay">Не указан</span>
+        </div>
+        <div class="example-items">
+            <div class="example">👔 Галстук из туалетной бумаги</div>
+            <div class="example">👑 Корона из веток</div>
+            <div class="example">📿 Браслет из скрепок</div>
+        </div>
+        <p class="small" style="margin-top: 6px;">⭐ Соверши творчество — потом собирай живые лайки!</p>
+    </div>
+
+    <!-- счётчик подписей (лайков) -->
+    <div class="likes-counter">
+        <div class="likes-info">🤝 Живые лайки (подписи на предмете)</div>
+        <div class="likes-number" id="likesCountDisplay">0 / 5</div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="like-btn" id="addLikeBtn">➕ ПОЛУЧИЛ ЛАЙК</button>
+            <button class="like-btn reset-like" id="resetLikesBtn">⟳ Сбросить лайки</button>
+        </div>
+    </div>
+    <p style="margin: -0.5rem 1.5rem 0.5rem 1.8rem; font-size: 0.7rem; color: #4e6b45;">* Каждый раз, когда другой участник поставил подпись/символ на твоём предмете — нажимай кнопку. Нужно 5!</p>
+
+    <!-- Панель показа куратору -->
+    <div class="fashion-show">
+        <button class="curator-btn" id="curatorShowBtn">🎤 ПОКАЗ ПЕРЕД КУРАТОРОМ</button>
+        <p style="font-size: 0.75rem; margin-top: 8px;">Выступи с презентацией своей коллекции. Условие: набрано 5 живых лайков</p>
+    </div>
+
+    <!-- Блок результата (выдача фрагмента) -->
+    <div id="resultFragment" class="result-fragment">
+        <div class="fragment-text">
+            🌟✨ <strong>ФРАГМЕНТ ПОЛУЧЕН — «МОДНЫЙ ТРИУМФ»</strong> ✨🌟<br><br>
+            🎉 Куратор в восторге! Твоя коллекция покорила суровый остров. Ты получаешь особый фрагмент: <strong>«Жемчужина океанского стиля»</strong> + право на участие в финальном показе.<br><br>
+            🧵 Ты доказал(а): даже после шторма можно создать шедевр и объединить людей. Поздравляем!
+        </div>
+        <div class="signature-list" id="signatureCongrats"></div>
+    </div>
+
+    <footer>
+        🌊 Отсканируй QR-код снова — прогресс сохранится в твоём браузере. Смелее подходи к другим!
+    </footer>
+</div>
+
+<script>
+    // --- Ключи для localStorage (сохраняем прогресс) ---
+    const STORAGE_LIKES = "vip_wardrobe_likes";
+    const STORAGE_ITEM_NAME = "vip_wardrobe_item";
+
+    // Текущее количество собранных лайков (подписей)
+    let currentLikes = 0;
+    // Название созданного элемента
+    let currentItemName = "";
+
+    // DOM элементы
+    const likesSpan = document.getElementById("likesCountDisplay");
+    const addBtn = document.getElementById("addLikeBtn");
+    const resetBtn = document.getElementById("resetLikesBtn");
+    const curatorBtn = document.getElementById("curatorShowBtn");
+    const resultDiv = document.getElementById("resultFragment");
+    const fashionItemInput = document.getElementById("fashionItemInput");
+    const itemDisplaySpan = document.getElementById("itemDisplay");
+    const signatureCongratsSpan = document.getElementById("signatureCongrats");
+
+    // Функция обновления интерфейса в зависимости от лайков
+    function updateUI() {
+        // обновляем счётчик на экране
+        likesSpan.innerText = `${currentLikes} / 5`;
+
+        // если собрано 5 или больше (максимум 5, но через add не даём больше 5, но на всякий случай)
+        const isComplete = (currentLikes >= 5);
+        if (currentLikes >= 5) {
+            // при достижении лимита блокируем добавление лайков (нельзя больше 5)
+            addBtn.disabled = true;
+            // но оставляем возможность сброса
+        } else {
+            addBtn.disabled = false;
+        }
+
+        // показ / скрытие фрагмента не автоматически, только по кнопке куратора
+        // но если уже был показан фрагмент, и потом сбросили лайки - скроем результат, надо сбросить видимость.
+        // При сбросе лайков или изменении лайков, если результат был показан, можно решить скрыть?
+        // Логика: при новом сбросе или изменении лайков мы скрываем фрагмент, чтобы куратор показывал заново.
+        // но если мы уже получили фрагмент, а потом сбросили лайки до 4, то фрагмент должен исчезнуть, т.к. условия уже нет.
+        if (currentLikes < 5) {
+            // если не хватает лайков, обязательно скрываем фрагмент и разблокируем кнопку куратора (но она активируется только когда 5)
+            resultDiv.style.display = "none";
+        }
+        // управляем доступностью кнопки куратора: активна только при currentLikes >= 5
+        if (currentLikes >= 5) {
+            curatorBtn.disabled = false;
+        } else {
+            curatorBtn.disabled = true;
+        }
+
+        // сохраняем в localStorage текущее состояние
+        localStorage.setItem(STORAGE_LIKES, currentLikes);
+        localStorage.setItem(STORAGE_ITEM_NAME, currentItemName);
+    }
+
+    // Добавить лайк (подпись от другого участника)
+    function addLike() {
+        if (currentLikes >= 5) {
+            // Нельзя превысить 5; дополнительно сообщим
+            alert("🎉 У вас уже 5 живых лайков! Идите к куратору и получайте фрагмент!");
+            return;
+        }
+        // Увеличиваем на 1
+        currentLikes++;
+        if (currentLikes > 5) currentLikes = 5; // страховка
+
+        // Обновляем интерфейс
+        updateUI();
+
+        // Если после добавления стало ровно 5, дадим приятное уведомление
+        if (currentLikes === 5) {
+            // не автоматически показываем фрагмент, но радостное сообщение
+            // можно подсветить кнопку куратора
+            curatorBtn.disabled = false;
+            // Показываем сообщение о готовности
+            const msg = "🌟 Ура! Ты собрал 5 живых подписей! Теперь смело жми «ПОКАЗ ПЕРЕД КУРАТОРОМ» и получай фрагмент! 🌟";
+            // Вставка временного уведомления через alert но для лучшего UX: alert не навязчив?
+            alert(msg);
+        } else {
+            // небольшой фидбек
+            const remaining = 5 - currentLikes;
+            // показываем ненавязчивый алерт или можно via тост, но для простоты — милое сообщение
+            if (remaining > 0) {
+                // не алертим каждый раз, чтобы не бесить, можно просто тихо обновить
+                // но выведем мягкий алерт раз в 3 лайка? Не обязательно. Ничего.
+            }
+        }
+    }
+
+    // Сброс лайков (если игрок хочет начать заново или обнулить подписи)
+    function resetLikes() {
+        if (confirm("❓ Сбросить все собранные живые лайки? Прогресс обнулится, но твой предмет останется. Фрагмент будет скрыт.")) {
+            currentLikes = 0;
+            updateUI();
+            // скрываем результат
+            resultDiv.style.display = "none";
+            // дополнительно при сбросе убираем блокировку кнопки добавления (она разблокируется через updateUI)
+            // уведомление
+            alert("Лайки сброшены. Не забывай снова собирать подписи на твоём модном аксессуаре!");
+        }
+    }
+
+    // "Показ перед куратором" — выдача фрагмента, только если лайков >=5
+    function showToCurator() {
+        if (currentLikes >= 5) {
+            // проверяем, не выдан ли уже фрагмент
+            if (resultDiv.style.display === "block") {
+                // если уже показан, можно продублировать, но не страшно
+                // но лучше показать что фрагмент уже есть
+                alert("Фрагмент уже у тебя! Покажи куратору физический модный аксессуар с подписями ✨");
+                return;
+            }
+            // Дополнительная проверка на наличие созданного предмета (по желанию)
+            let itemForShow = currentItemName.trim();
+            if (itemForShow === "") {
+                itemForShow = "твой уникальный аксессуар";
+            }
+            // Обновим текст внутри фрагмента, можно добавить персонализированное поздравление
+            const fragmentDiv = document.querySelector("#resultFragment .fragment-text");
+            if (fragmentDiv) {
+                fragmentDiv.innerHTML = `🌟✨ <strong>ФРАГМЕНТ ПОЛУЧЕН — «МОДНЫЙ ТРИУМФ»</strong> ✨🌟<br><br>
+                🎉 Куратор в восторге от <strong>«${escapeHtml(itemForShow)}»</strong>! Твоя коллекция покорила суровый остров. Ты получаешь особый фрагмент: <strong>«Жемчужина океанского стиля»</strong> + право на участие в финальном показе.<br><br>
+                🧵 Ты доказал(а): даже после шторма можно создать шедевр и объединить людей.<br> Поздравляем с триумфом! 🌊👔`;
+            }
+            // также добавим в блок подписей напоминание
+            signatureCongratsSpan.innerHTML = `📜 На твоём предмете красуются ${currentLikes} живых подписей — это победа!`;
+            resultDiv.style.display = "block";
+            // сохраним факт показа фрагмента в localStorage? Не обязательно, главное прогресс лайков и предмет
+            // но ради приятности, дополнительно сохранять не будем, так как при перезагрузке страницы фрагмент будет скрыт,
+            // но лайки останутся. Если лайки = 5 и пользователь заново нажмет кнопку куратора – фрагмент покажется снова, что логично.
+            // Также прокрутим к фрагменту
+            resultDiv.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+            alert(`😩 Недостаточно живых лайков! У тебя ${currentLikes}, а нужно 5. Продолжай собирать подписи на своём модном творении!`);
+        }
+    }
+
+    // вспомогательная функция для экранирования HTML
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // Сохранение названия предмета и отображение
+    function updateItemName() {
+        let newName = fashionItemInput.value.trim();
+        if (newName === "") {
+            currentItemName = "Не указан";
+        } else {
+            currentItemName = newName;
+        }
+        itemDisplaySpan.innerText = currentItemName;
+        localStorage.setItem(STORAGE_ITEM_NAME, currentItemName);
+    }
+
+    // Загрузка сохранённых данных из localStorage
+    function loadFromStorage() {
+        const savedLikes = localStorage.getItem(STORAGE_LIKES);
+        if (savedLikes !== null && !isNaN(parseInt(savedLikes))) {
+            currentLikes = parseInt(savedLikes);
+            if (currentLikes > 5) currentLikes = 5;
+            if (currentLikes < 0) currentLikes = 0;
+        } else {
+            currentLikes = 0;
+        }
+
+        const savedItem = localStorage.getItem(STORAGE_ITEM_NAME);
+        if (savedItem !== null && savedItem !== "") {
+            currentItemName = savedItem;
+        } else {
+            currentItemName = "Не указан";
+        }
+
+        // установить значение в input
+        if (currentItemName !== "Не указан") {
+            fashionItemInput.value = currentItemName;
+        } else {
+            fashionItemInput.value = "";
+        }
+        itemDisplaySpan.innerText = currentItemName;
+        updateUI();
+
+        // если лайков >=5, но результат не показываем автоматически, чтобы участник сам инициировал показ
+        // но кнопка куратора активна должна быть:
+        if (currentLikes >= 5) {
+            curatorBtn.disabled = false;
+        } else {
+            curatorBtn.disabled = true;
+            resultDiv.style.display = "none";
+        }
+    }
+
+    // Инициализация событий
+    function init() {
+        loadFromStorage();
+
+        addBtn.addEventListener("click", addLike);
+        resetBtn.addEventListener("click", resetLikes);
+        curatorBtn.addEventListener("click", showToCurator);
+        fashionItemInput.addEventListener("input", function() {
+            updateItemName();
+        });
+        // дополнительно при потери фокуса
+        fashionItemInput.addEventListener("blur", updateItemName);
+        // Защита от случайного двойного нажатия
+        // дополнительное краевое: если пользователь уже показал куратору, то кнопка не блокирует повторное нажатие,
+        // но при повторном нажатии если лайки >=5 снова покажет фрагмент, это нормально.
+    }
+    init();
+</script>
+</body>
+</html>
